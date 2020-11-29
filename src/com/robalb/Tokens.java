@@ -5,479 +5,91 @@ public enum Tokens {
      *  IDENTIFIER
      *  an unlimited-length sequence of letters and digits, the first of which must be a letter.
      */
-    IDENTIFIER{
-        public int valueType(){
-            return Token.TT_WORD;
-        }
-        public String fixed(){
-            return "";
-        }
-    },
-
+    IDENTIFIER(Token.TT_WORD, ""),
 
     /**
      * KEYWORDS
      * names reserved by the language, that cannot be used as identifiers
      */
-    K_BREAK{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "break";
-        }
-    },
-    K_CATCH{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "catch";
-        }
-    },
-    K_CLASS{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "class";
-        }
-    },
-    K_CONST{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "const";
-        }
-    },
-    K_ELSE{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "else";
-        }
-    },
-    K_FUNCTION{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "function";
-        }
-    },
-    K_IF{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "if";
-        }
-    },
-    K_LET{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "let";
-        }
-    },
-    K_NEW{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "new";
-        }
-    },
-    K_RETURN{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "return";
-        }
-    },
-    K_THROW{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "throw";
-        }
-    },
-    K_TRY{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "try";
-        }
-    },
-    K_VAR {
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "var";
-        }
-    },
-    K_WHILE{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "while";
-        }
-    },
-
+    K_BREAK(Token.TT_FIXED, "break"),
+    K_CATCH(Token.TT_FIXED, "catch"),
+    K_CLASS(Token.TT_FIXED, "class"),
+    K_CONST(Token.TT_FIXED, "const"),
+    K_ELSE(Token.TT_FIXED, "else"),
+    K_FUNCTION(Token.TT_FIXED, "function"),
+    K_IF(Token.TT_FIXED, "if"),
+    K_LET(Token.TT_FIXED, "let"),
+    K_NEW(Token.TT_FIXED, "new"),
+    K_RETURN(Token.TT_FIXED, "return"),
+    K_THROW(Token.TT_FIXED, "throw"),
+    K_TRY(Token.TT_FIXED, "try"),
+    K_VAR (Token.TT_FIXED, "var"),
+    K_WHILE(Token.TT_FIXED, "while"),
 
     /**
      * LITERALS
      * the source code representation of a value of a primitive type
      */
-    L_NULL{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "null";
-        }
-    },
-    L_NUMBER{
-        public int valueType() {
-            return Token.TT_NUMBER;
-        }
-        public String fixed(){
-            return "";
-        }
-    },
-    L_STRING{
-        public int valueType() {
-            return Token.TT_WORD;
-        }
-        public String fixed(){
-            return "";
-        }
-    },
-    L_BOOLEAN{
-        public int valueType() {
-            return Token.TT_BOOLEAN;
-        }
-        public String fixed(){
-            return "";
-        }
-    },
-
+    L_NULL(Token.TT_FIXED, "null"),
+    L_NUMBER(Token.TT_NUMBER, ""),
+    L_STRING(Token.TT_WORD, ""),
+    L_BOOLEAN(Token.TT_BOOLEAN, ""),
 
     /**
      * SEPARATORS
      * the source code representation of a value of a primitive type
      */
-    S_ROUND_LEFT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "(";
-        }
-    },
-    S_ROUND_RIGHT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ")";
-        }
-    },
-    S_SQUARE_LEFT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "[";
-        }
-    },
-    S_SQUARE_RIGHT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "]";
-        }
-    },
-    S_CURLY_LEFT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "{";
-        }
-    },
-    S_CURLY_RIGHT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "}";
-        }
-    },
-    S_SEMICOLON{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ";";
-        }
-    },
-    S_COMMA{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ",";
-        }
-    },
-    S_DOT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ".";
-        }
-    },
-    S_SPREAD{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "...";
-        }
-    },
-
-
+    S_ROUND_LEFT(Token.TT_FIXED, "("),
+    S_ROUND_RIGHT(Token.TT_FIXED, ")"),
+    S_SQUARE_LEFT(Token.TT_FIXED, "["),
+    S_SQUARE_RIGHT(Token.TT_FIXED, "]"),
+    S_CURLY_LEFT(Token.TT_FIXED, "{"),
+    S_CURLY_RIGHT(Token.TT_FIXED, "}"),
+    S_SEMICOLON(Token.TT_FIXED, ";"),
+    S_COMMA(Token.TT_FIXED, ","),
+    S_DOT(Token.TT_FIXED, "."),
+    S_SPREAD(Token.TT_FIXED, "..."),
 
     /**
      * OPERATORS
      * symbols or words related to operations
      */
-    O_PLUS{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "+";
-        }
-    },
-    O_MINUS{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "-";
-        }
-    },
-    O_DIVISION{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "/";
-        }
-    },
-    O_MULTIPLICATION{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "*";
-        }
-    },
-    O_REMAINDER{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "%";
-        }
-    },
-    O_EXPONENTIAL{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "**";
-        }
-    },
-    O_LESS{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "<";
-        }
-    },
-    O_GREATER{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ">";
-        }
-    },
-    O_LESS_OR_EQUAL{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "<=";
-        }
-    },
-    O_GERATER_OR_EQUAL{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ">=";
-        }
-    },
-    O_EQUAL{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "==";
-        }
-    },
-    O_NOT_EQUAL{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "!=";
-        }
-    },
-    O_IDENTITY{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "===";
-        }
-    },
-    O_NONIDENTITY{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "!==";
-        }
-    },
-    O_B_SHIFT_LEFT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return ">>";
-        }
-    },
-    O_B_SHIFT_RIGHT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "<<";
-        }
-    },
-    O_B_AND{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "&";
-        }
-    },
-    O_B_OR{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "|";
-        }
-    },
-    O_B_XOR{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "^";
-        }
-    },
-    O_L_AND{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "&&";
-        }
-    },
-    O_L_OR{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "||";
-        }
-    },
-    O_INCREMENT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "++";
-        }
-    },
-    O_DECREMENT{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "--";
-        }
-    },
-    O_ASSIGN{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "=";
-        }
-    },
-
+    O_PLUS(Token.TT_FIXED, "+"),
+    O_MINUS(Token.TT_FIXED, "-"),
+    O_DIVISION(Token.TT_FIXED, "/"),
+    O_MULTIPLICATION(Token.TT_FIXED, "*"),
+    O_REMAINDER(Token.TT_FIXED, "%"),
+    O_EXPONENTIAL(Token.TT_FIXED, "**"),
+    O_LESS(Token.TT_FIXED, "<"),
+    O_GREATER(Token.TT_FIXED, ">"),
+    O_LESS_OR_EQUAL(Token.TT_FIXED, "<="),
+    O_GERATER_OR_EQUAL(Token.TT_FIXED, ">="),
+    O_EQUAL(Token.TT_FIXED, "=="),
+    O_NOT_EQUAL(Token.TT_FIXED, "!="),
+    O_IDENTITY(Token.TT_FIXED, "==="),
+    O_NONIDENTITY(Token.TT_FIXED, "!=="),
+    O_B_SHIFT_LEFT(Token.TT_FIXED, ">>"),
+    O_B_SHIFT_RIGHT(Token.TT_FIXED, "<<"),
+    O_B_AND(Token.TT_FIXED, "&"),
+    O_B_OR(Token.TT_FIXED, "|"),
+    O_B_XOR(Token.TT_FIXED, "^"),
+    O_L_AND(Token.TT_FIXED, "&&"),
+    O_L_OR(Token.TT_FIXED, "||"),
+    O_INCREMENT(Token.TT_FIXED, "++"),
+    O_DECREMENT(Token.TT_FIXED, "--"),
+    O_ASSIGN(Token.TT_FIXED, "="),
 
     /**
      * SEPARATOR / COMMENT
      * tokens ignored by the actual program
      */
-    SEPARATOR{
-        public int valueType() {
-            return Token.TT_FIXED;
-        }
-        public String fixed(){
-            return "";
-        }
-    },
-    COMMENT{
-        public int valueType() {
-            return Token.TT_WORD;
-        }
-        public String fixed(){
-            return "";
-        }
-    };
+    SEPARATOR(Token.TT_FIXED, ""),
+    COMMENT(Token.TT_WORD, "");
 
-    public abstract int valueType();
-    public abstract String fixed();
-//    public abstract String description();
+    public final int valueType;
+    public final String fixed;
+    Tokens(int valueType, String fixedValue) {
+        this.valueType = valueType;
+        this.fixed = fixedValue;
+    }
 }
