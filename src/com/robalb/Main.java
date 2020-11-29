@@ -11,5 +11,6 @@ public class Main{
         Tokenizer tokenizer = new Tokenizer();
         ArrayList<Token> a = tokenizer.tokenize(program);
         System.out.println(a.get(0).type());
+        System.out.println(a.get(0).valueType());
     }
 }
