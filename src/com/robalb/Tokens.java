@@ -3,7 +3,7 @@ package com.robalb;
 public enum Tokens {
     /**
      *  IDENTIFIER
-     *  an unlimited-length sequence of letters and digits, the first of which must be a letter.
+     *  an unlimited-length sequence of letters and digits, the first of which must be a letter, that are not keywords
      */
     IDENTIFIER(Token.TV_WORD, ""),
 
@@ -37,7 +37,7 @@ public enum Tokens {
 
     /**
      * SEPARATORS
-     * the source code representation of a value of a primitive type
+     *
      */
     S_ROUND_LEFT(Token.TV_FIXED, "("),
     S_ROUND_RIGHT(Token.TV_FIXED, ")"),
@@ -54,10 +54,12 @@ public enum Tokens {
      * OPERATORS
      * symbols or words related to operations
      */
+    O_TILDE(Token.TV_FIXED, "~"),
     O_PLUS(Token.TV_FIXED, "+"),
     O_MINUS(Token.TV_FIXED, "-"),
     O_DIVISION(Token.TV_FIXED, "/"),
     O_MULTIPLICATION(Token.TV_FIXED, "*"),
+    O_NOT(Token.TV_FIXED, "!"),
     O_REMAINDER(Token.TV_FIXED, "%"),
     O_EXPONENTIAL(Token.TV_FIXED, "**"),
     O_LESS(Token.TV_FIXED, "<"),
@@ -78,12 +80,25 @@ public enum Tokens {
     O_INCREMENT(Token.TV_FIXED, "++"),
     O_DECREMENT(Token.TV_FIXED, "--"),
     O_ASSIGN(Token.TV_FIXED, "="),
+    O_ADDITION_ASSIGN(Token.TV_FIXED, "+="),
+    O_MULTIPLICATION_ASSIGN(Token.TV_FIXED, "*="),
+    O_EXPONENTIAL_ASSIGN(Token.TV_FIXED, "**="),
+    O_DIVISION_ASSIGN(Token.TV_FIXED, "/="),
+    O_REMAINDER_ASSIGN(Token.TV_FIXED, "%="),
+    O_SUBTRACTION_ASSIGN(Token.TV_FIXED, "-="),
+    O_L_SHIFT_LEFT_ASSIGN(Token.TV_FIXED, "<<="),
+    O_L_SHIFT_RIGHT_ASSIGN(Token.TV_FIXED, ">>="),
+    O_B_AND_ASSIGN(Token.TV_FIXED, "&="),
+    O_B_OR_ASSIGN(Token.TV_FIXED, "|="),
+    O_B_XOR_ASSIGN(Token.TV_FIXED, "^="),
+    O_L_AND_ASSIGN(Token.TV_FIXED, "&&="),
+    O_L_OR_ASSIGN(Token.TV_FIXED, "||="),
 
     /**
      * SEPARATOR / COMMENT
      * tokens ignored by the actual program
      */
-    SEPARATOR(Token.TV_FIXED, ""),
+    SEPARATOR(Token.TV_FIXED, "\t"),
     COMMENT(Token.TV_WORD, "");
 
     public final int valueType;

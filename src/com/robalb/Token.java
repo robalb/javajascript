@@ -13,6 +13,7 @@ public class Token {
     private double nval = 0.0;
     private boolean bval = true;
 
+
     public Token(Tokens tokenType){
         if(tokenType.valueType != Token.TV_FIXED) throw new RuntimeException("this token requires a param");
         this.tokenType = tokenType;
