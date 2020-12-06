@@ -1,6 +1,6 @@
 package com.robalb.lexer.machines;
 
-import com.robalb.Tokens;
+import com.robalb.Token;
 
 /**
  * define the public interface for all the parser machines
@@ -58,8 +58,8 @@ public interface Machine {
     String getError();
 
     /**
-     * if the step method returned Machine.MATCH this method will return the Tokens enum type
-     * @return the token type found during the parse steps
+     * if the step method returned Machine.PERFECTMACTH or ENDMATCH this method will return the Token
+     * @return the token found and generated during the parse steps
      */
-    Tokens getMatchToken();
+    Token getToken();
 }

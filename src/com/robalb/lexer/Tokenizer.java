@@ -4,6 +4,7 @@ import com.robalb.Token;
 import com.robalb.Tokens;
 import com.robalb.lexer.machines.Machine;
 import com.robalb.lexer.machines.Separator;
+import com.robalb.lexer.machines.SimplePunctuators;
 
 import java.util.ArrayList;
 
@@ -18,13 +19,20 @@ public class Tokenizer {
     }
     public ArrayList<Token> tokenize(String input){
 
+        //reset on every newline token
         this.position = 0;
-        this.lastTokenPosition = 0;
         this.line = 0;
+        //when refactoring to use stream, this should be a whole string buffer, or a bufferedreader mark
+        this.lastTokenPosition = 0;
+
         //declare array of ?statemachines? or wathever
         //same as ArrayList<Machine> machines = new ArrayList<>();
-        var machines = new ArrayList<Machine>();
-        machines.add(Separator.START);
+        Machine[] machines = {
+                new SimplePunctuators()
+        };
+
+        ArrayList<Token> tokenizedInput = new ArrayList<>(); //access using get(index)
+//        tokenizedInput.add(new Token(Tokens.IDENTIFIER, "_identifier_test"));
 
         int currentMachine = 0;
         while(position < input.length()){
@@ -55,8 +63,6 @@ public class Tokenizer {
         //      reset the list of updating Tokens machines
         //      reset the lastTokenPosition
 
-        ArrayList<Token> tokenizedInput = new ArrayList<>(); //access using get(index)
-        tokenizedInput.add(new Token(Tokens.IDENTIFIER, "_identifier_test"));
 
         return tokenizedInput;
     }
