@@ -6,6 +6,7 @@ import com.robalb.lexer.machines.Machine;
 import com.robalb.lexer.machines.Separator;
 import com.robalb.lexer.machines.SimplePunctuators;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
 
 public class Tokenizer {
@@ -14,10 +15,16 @@ public class Tokenizer {
     private long lastTokenPosition;
     private int line;
 
+    protected BufferedReader buffStream;
+
+    public Tokenizer(BufferedReader buffStream){
+        this.buffStream = buffStream;
+    }
+
     public int nextToken(){
         return 0;
     }
-    public ArrayList<Token> tokenize(String input){
+    public ArrayList<Token> getTokens(){
 
         //reset on every newline token
         this.position = 0;
@@ -34,8 +41,6 @@ public class Tokenizer {
         ArrayList<Token> tokenizedInput = new ArrayList<>(); //access using get(index)
 //        tokenizedInput.add(new Token(Tokens.IDENTIFIER, "_identifier_test"));
 
-        int currentMachine = 0;
-        while(position < input.length()){
 
             /*
              * linkedlist of enums, all implementing same interface
@@ -51,8 +56,7 @@ public class Tokenizer {
             //when all the state machines are just_closed or closed
             //  instead of iterating again, call the evaluator for the keyword associated to the statemachine that is just_closed (possible cases for multiple just_closed)
             //  reset the statemachine thing, update lastTokenPosition to position and start again
-            position++;
-        }
+
         //iterate every token-thingy in the structure-yet-to-define-thing and advance them by one step.
         //when one of them returns NO_MATCH stop calling it in the iteration loop
         //when the last of them return NO_MATCH
@@ -66,8 +70,4 @@ public class Tokenizer {
 
         return tokenizedInput;
     }
-    // private void scan(String[]input){
-    // }
-    // private void evaluate(String[] defineThisThing){
-    // }
 }

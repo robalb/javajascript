@@ -1,7 +1,6 @@
 package com.robalb;
 
 public enum Tokens {
-    //https://astexplorer.net/
 
 
     /**
@@ -9,26 +8,20 @@ public enum Tokens {
      * @see <a href="https://www.ecma-international.org/ecma-262/#sec-white-space">ECMAscript reference</a>
      *
      */
-    WHITE_SPACE(Token.TV_WORD),
+    WHITE_SPACE(Token.TV_IGNORE),
 
     /**
      * LINE TERMINATOR
      * @see <a href="https://www.ecma-international.org/ecma-262/#sec-line-terminators">ECMAscript reference</a>
      *
      */
-    LINE_TERMINATOR(Token.TV_WORD),
+    LINE_TERMINATOR(Token.TV_IGNORE),
 
     /**
      * COMMENT
      * @see <a href="https://www.ecma-international.org/ecma-262/#sec-comments">ECMAscript reference</a>
      */
-    COMMENT(Token.TV_WORD),
-
-    /**
-     *  IDENTIFIER
-     *  an unlimited-length sequence of letters and digits, the first of which must be a letter, that are not keywords
-     */
-    IDENTIFIER(Token.TV_WORD),
+    COMMENT(Token.TV_IGNORE),
 
     /**
      * LITERALS
@@ -39,6 +32,12 @@ public enum Tokens {
     L_BOOLEAN(Token.TV_BOOLEAN),
     L_NUMBER(Token.TV_NUMBER),
     L_STRING(Token.TV_WORD),
+
+    /**
+     *  IDENTIFIER
+     *  an unlimited-length sequence of letters and digits, the first of which must be a letter, that are not keywords
+     */
+    IDENTIFIER(Token.TV_WORD),
 
     /**
      * KEYWORDS

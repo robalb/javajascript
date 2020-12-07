@@ -2,10 +2,36 @@ package com.robalb;
 
 public class Token {
     //constants for the different Token Value types that a token can have
+
+    /**
+     * describes the type of value associated to a token:
+     * a numeric value, specifically a double
+     */
     public static final int TV_NUMBER = 1;
+
+    /**
+     * describes the type of value associated to a token:
+     * a String
+     */
     public static final int TV_WORD = 2;
+
+    /**
+     * describes the type of value associated to a token:
+     * none, the token name itself is enough to represent it.
+     */
     public static final int TV_FIXED = 3;
+
+    /**
+     * describes the type of value associated to a token:
+     * a boolean value
+     */
     public static final int TV_BOOLEAN = 4;
+
+    /**
+     * describes the type of value associated to a token:
+     * ignore token - the token with this value should be ignored and not added to the tokenized output array/stream
+     */
+    public static final int TV_IGNORE = 5;
 
     private final Tokens tokenType;
 
