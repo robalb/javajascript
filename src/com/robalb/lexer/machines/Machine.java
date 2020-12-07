@@ -10,31 +10,31 @@ public interface Machine {
      * constant representing the public state the machine is currently in:
      * -- no match found by the current machine
      */
-    public static final int NOMATCH = 101;
+    int NOMATCH = 101;
 
     /**
      * constant representing the public state the machine is currently in:
      * -- the machine is stil stepping internally
      */
-    public static final int STEPPING = 102;
+    int STEPPING = 102;
 
     /**
      * constant representing the public state the machine is currently in:
-     * -- an error waas encountered during the parsing
+     * -- an error was encountered during the parsing
      */
-    public static final int ERROR = 103;
+    int ERROR = 103;
 
     /**
      * constant representing the public state the machine is currently in:
      * -- a token was found, and the last char passed to step is the last char of that token
      */
-    public static final int PERFECTMATCH = 104;
+    int PERFECTMATCH = 104;
 
     /**
      * constant representing the public state the machine is currently in:
      * -- a token was found, and the last char passed to step is NOT part of that token
      */
-    public static final int ENDMATCH = 105;
+    int ENDMATCH = 105;
 
     /**
      * initialize or reset the internal state of the machine.

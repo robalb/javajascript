@@ -16,7 +16,7 @@ public class Main{
         //this code is temporary, should be replaced by a proper stream class, and a proper cli wrapper
         String filePath = "test1.txt";
 
-        FileInputStream fileStream = null;
+        FileInputStream fileStream;
         try {
             fileStream = new FileInputStream(filePath);
         } catch (FileNotFoundException e) {

@@ -134,9 +134,6 @@ public enum Tokens {
     Tokens(int valueType) {
         this.valueType = valueType;
     }
-    Tokens(String fixedValue) {
-        this.fixed = fixedValue;
-    }
     Tokens(int valueType, String fixedValue) {
         this.valueType = valueType;
         this.fixed = fixedValue;

@@ -55,7 +55,7 @@ public class SimplePunctuators implements Machine {
     }
 
 
-    public void Separator(){
+    public SimplePunctuators(){
         //initialize the machine
         this.reset();
 
@@ -194,7 +194,7 @@ public class SimplePunctuators implements Machine {
     /**
      * core of the machine
      */
-    @Override public int step(char c) {
+    @Override public int step(char c) throws RuntimeException {
         if(state == States._END){
             throw new RuntimeException("cannot use step after the machine reaches the _END state");
         }
@@ -255,17 +255,18 @@ public class SimplePunctuators implements Machine {
             this.token = token;
         }
 
-        /**
-         * End case: the specified char causes the machine to end, returning the specified error string and the public state ERROR
-         * @param c the char that will cause this state change
-         * @param error a string descriving the error found
-         */
-        T(char c, String error) {
-            this.c = c;
-            this.state = States._END;
-            this.error = error;
-            this.publicState = Machine.ERROR;
-        }
+//        /**
+//         * End case: the specified char causes the machine to end, returning the specified error string and the public state ERROR
+//         * @param c the char that will cause this state change
+//         * @param error a string descriving the error found
+//         */
+//        T(char c, String error) {
+//            this.c = c;
+//            this.state = States._END;
+//            this.error = error;
+//            this.publicState = Machine.ERROR;
+//        }
+
         /**
          * End case: the specified char causes the machine to end, returning the public state NOMATCH
          * @param c the char that will cause this state change
@@ -276,9 +277,9 @@ public class SimplePunctuators implements Machine {
             this.publicState = Machine.NOMATCH;
         }
 
-        /**
-         * void case: use this at the end of a state transitions array when you dont want an action associated to the 'ELSE' case
-         */
+//        /**
+//         * void case: use this at the end of a state transitions array when you dont want an action associated to the 'ELSE' case
+//         */
 //        T(){
 //
 //        }
