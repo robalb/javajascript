@@ -95,17 +95,22 @@ public class Tokenizer {
 
             //the machine found a result
             else if(state == Machine.PERFECTMATCH || state == Machine.ENDMATCH){
+                //handle token result
+                //TODO: include here ignore for tokens of type ignore, and on newLine token: reset positionInLIne, increment linenumber
+                tokenizedInput.add(machines[machineIndex].getToken());
+
                 //handle buffer marks
                 if(state == Machine.ENDMATCH){
                     skipUpdate = true;
                     setMark = Mark.BEFORE_READ;
                 }else{
                     setMark = Mark.AFTER_READ;
+                    //if a perfectmatch just happened, and the lookahead is the eof
+                    //stop now
+                    if(aheadC == -1){
+                        break;
+                    }
                 }
-                //handle token result
-                //TODO: include here ignore for tokens of type ignore, and on newLine token: reset positionInLIne, increment linenumber
-                tokenizedInput.add(machines[machineIndex].getToken());
-
                 //resets
                 machines[machineIndex].reset();
                 machineIndex = 0;
@@ -116,7 +121,7 @@ public class Tokenizer {
                 machineIndex++;
                 if(machineIndex == machines.length){
                     System.out.println("parse error encountered");
-                    System.out.println("string didn't match anything");
+                    System.out.println("Unexpected character '[char]' at [line]:[column]");
                     break;
                 }
                 machines[machineIndex].reset();

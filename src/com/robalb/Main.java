@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class Main{
     public static void main(String[] args){
         //this code is temporary, should be replaced by a proper stream class, and a proper cli wrapper
-        String filePath = "C:\\Users\\Alberto\\IdeaProjects\\parserexp\\src\\com\\robalb\\test1.txt";
+        String filePath = "C:\\Users\\Alberto\\IdeaProjects\\parserexp\\src\\com\\robalb\\test1.js";
 
         FileInputStream fileStream;
         try {

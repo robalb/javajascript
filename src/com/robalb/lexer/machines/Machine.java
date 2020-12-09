@@ -46,7 +46,8 @@ public interface Machine {
      * move the parsing machine one step.
      * implementation note: if the returned state is Machine.NOMATCH the code iterating the collection of these
      *                      machines should backtrack and call the next machine.
-     * @param currentChar the current char being inspected in the program string
+     * @param intC an integer repreesntation of the current char being inspected in the program stream. if -1, the eof has been reached
+     * @param intLookAhead same as intC, but one character ahead
      * @return int - the machine public state - must be one of the constants defined in Machine interface
      */
     int step(int intC, int intLookAhead);
