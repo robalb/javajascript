@@ -10,7 +10,7 @@ public class Separator implements Machine{
     }
 
     @Override
-    public int step(char currentChar) {
+    public int step(int intC, int intLookAhead) {
         return 0;
     }
 

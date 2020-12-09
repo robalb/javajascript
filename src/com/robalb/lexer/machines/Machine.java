@@ -49,7 +49,7 @@ public interface Machine {
      * @param currentChar the current char being inspected in the program string
      * @return int - the machine public state - must be one of the constants defined in Machine interface
      */
-    int step(char currentChar);
+    int step(int intC, int intLookAhead);
 
     /**
      * if the step method returned Machine.ERROR this method will return the error string

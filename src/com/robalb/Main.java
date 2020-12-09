@@ -2,19 +2,24 @@ package com.robalb;
 
 import com.robalb.lexer.Tokenizer;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+//
+//
+//             how do you eat an elephant?
+//
+//
+
+
 /*
     //https://astexplorer.net/
  */
 public class Main{
     public static void main(String[] args){
         //this code is temporary, should be replaced by a proper stream class, and a proper cli wrapper
-        String filePath = "test1.txt";
+        String filePath = "C:\\Users\\Alberto\\IdeaProjects\\parserexp\\src\\com\\robalb\\test1.txt";
 
         FileInputStream fileStream;
         try {
@@ -30,8 +35,24 @@ public class Main{
 
         Tokenizer tokenizer = new Tokenizer(buffReader);
 
-        ArrayList<Token> a = tokenizer.getTokens();
-        System.out.println(a.get(0).type());
-        System.out.println(a.get(0).valueType());
+        ArrayList<Token> a;
+        try {
+            a = tokenizer.getTokens();
+        } catch (IOException e) {
+            System.out.println("IOexception occurred while reading the file");
+            e.printStackTrace();
+            return;
+        }
+        System.out.println("[debug] printing the stream tokens");
+        for(Token t: a){
+            System.out.print(t.type());
+            System.out.print(" ");
+            switch (t.valueType()) {
+                case Token.TV_BOOLEAN -> System.out.println(t.bval());
+                case Token.TV_NUMBER -> System.out.println(t.nval());
+                case Token.TV_WORD -> System.out.println(t.wval());
+                default -> System.out.println(" ");
+            }
+        }
     }
 }

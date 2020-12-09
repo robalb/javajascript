@@ -3,10 +3,10 @@ package com.robalb.lexer;
 import com.robalb.Token;
 import com.robalb.Tokens;
 import com.robalb.lexer.machines.Machine;
-import com.robalb.lexer.machines.Separator;
 import com.robalb.lexer.machines.SimplePunctuators;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Tokenizer {
@@ -24,7 +24,14 @@ public class Tokenizer {
     public int nextToken(){
         return 0;
     }
-    public ArrayList<Token> getTokens(){
+    private enum Mark {
+        NO,
+        BEFORE_READ,
+        AFTER_READ
+    }
+    public ArrayList<Token> getTokens() throws IOException {
+
+        ArrayList<Token> tokenizedInput = new ArrayList<>(); //access using get(index)
 
         //reset on every newline token
         this.position = 0;
@@ -37,9 +44,87 @@ public class Tokenizer {
         Machine[] machines = {
                 new SimplePunctuators()
         };
+        //the machine tat we are stepping through at the moment
+        int machineIndex = 0;
 
-        ArrayList<Token> tokenizedInput = new ArrayList<>(); //access using get(index)
-//        tokenizedInput.add(new Token(Tokens.IDENTIFIER, "_identifier_test"));
+        int currentC = -2;
+        int aheadC;
+        aheadC = this.buffStream.read();
+
+        boolean skipUpdate = false;
+
+        //specify how the mark setting should be handled on every iteration:
+        //NO = don't mark. otherwise mark before or after the bufferread
+        Mark setMark = Mark.BEFORE_READ;
+        int MARKBUFFER = 20;//TODO: find if this is a good idea. 20 should be app. the max length of a reserved keyword. //strings or literals should throw parse error when wrong, and not require backtracking
+
+        //iterate every character int the buffStream
+        while(currentC != -1){
+            //if specified, call mark before the read
+            if(setMark == Mark.BEFORE_READ){
+                setMark = Mark.NO;
+                buffStream.mark(MARKBUFFER);
+            }
+            //move aheadC into currentC, and read a new char into aheadC
+            if(!skipUpdate){
+                currentC = aheadC;
+                if (currentC != -1) {
+                    aheadC = this.buffStream.read();
+                }
+            }else{
+                skipUpdate = false;
+            }
+            //if specified, call mark after the read
+            if(setMark == Mark.AFTER_READ){
+                setMark = Mark.NO;
+                buffStream.mark(MARKBUFFER);
+            }
+
+            //step through the current machine
+            int state = machines[machineIndex].step(currentC, aheadC);
+
+            //the machine encountered a parse error
+            if(state == Machine.ERROR){
+                System.out.println("parse error encountered");
+                System.out.println(machines[machineIndex].getError());
+                break;
+            }
+            //the machine require further steps to get a result
+//            else if(state == Machine.STEPPING){
+//            }
+
+            //the machine found a result
+            else if(state == Machine.PERFECTMATCH || state == Machine.ENDMATCH){
+                //handle buffer marks
+                if(state == Machine.ENDMATCH){
+                    skipUpdate = true;
+                    setMark = Mark.BEFORE_READ;
+                }else{
+                    setMark = Mark.AFTER_READ;
+                }
+                //handle token result
+                //TODO: include here ignore for tokens of type ignore, and on newLine token: reset positionInLIne, increment linenumber
+                tokenizedInput.add(machines[machineIndex].getToken());
+
+                //resets
+                machines[machineIndex].reset();
+                machineIndex = 0;
+            }
+
+            //the current machine didn't get a match: backtrack and move to the next machine
+            else if(state == Machine.NOMATCH){
+                machineIndex++;
+                if(machineIndex == machines.length){
+                    System.out.println("parse error encountered");
+                    System.out.println("string didn't match anything");
+                    break;
+                }
+                machines[machineIndex].reset();
+                buffStream.reset();
+            }
+
+
+        }
 
 
             /*

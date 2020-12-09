@@ -56,6 +56,7 @@ public class SimplePunctuators implements Machine {
 
 
     public SimplePunctuators(){
+
         //initialize the machine
         this.reset();
 
@@ -192,27 +193,48 @@ public class SimplePunctuators implements Machine {
 
 
     /**
-     * core of the machine
+     *
+     * @param intC the integer rapresentation of the current char read from the buffer. -1 is considered the end of the file
+     * @param intLookahead same as intC, but one character ahead. if intC is -1, intLookahead is expected to also be -1
+     * @return one of the integer constants defined in the Machine interface, representing the state of the machine
+     * @throws RuntimeException if this method is called when the internal state reaches _END and reset() has not been called
      */
-    @Override public int step(char c) throws RuntimeException {
+    @Override public int step(int intC, int intLookahead) throws RuntimeException {
         if(state == States._END){
             throw new RuntimeException("cannot use step after the machine reaches the _END state");
         }
+
         //get the array of transitions for the current state
         T[] current = this.table.get(this.state);
-        for(int i=0; i< current.length; i++){
-            //if the char matches the current transition, or this is the last transition of the array(else transition)
-            if(current[i].matches(c) || i==current.length-1){
-                //update the internal state
-                state = current[i].getState();
-                //check if the machine reached an end
-                if(state == States._END){
-                    finalTransition = current[i];
+
+        //the correct transition index - by default the last one in the array, reserved for the else cases
+        int choosenTransition = current.length-1;
+
+        //if there is a valid char, and not the end of the file
+        if(intC != -1){
+            //iterate all the transitions in the aray, and search a matching one.
+            for(int i=0; i< current.length-1; i++){
+                //if the char matches the current transition, or this is the last transition of the array(else transition)
+                if(current[i].matches((char) intC)){
+                    //choose this transition
+                    choosenTransition = i;
+                    break;
                 }
-                break;
             }
         }
-        return finalTransition.getPublicState();
+
+        //update the state
+        state = current[choosenTransition].getState();
+        //if the machine reached the end, set the finalTransition
+        if(state == States._END){
+            finalTransition = current[choosenTransition];
+        }
+        //note: handle unexpected eof here (right now, this class doesn't need this case,
+        //every transition accept an eof)
+
+
+
+        return current[choosenTransition].getPublicState();
 
     }
 
