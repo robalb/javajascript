@@ -1,5 +1,6 @@
 package com.robalb;
 
+import com.robalb.fileStream.ExtendedBuffReader;
 import com.robalb.lexer.Tokenizer;
 
 import java.io.*;
@@ -29,7 +30,7 @@ public class Main{
             e.printStackTrace();
             return;
         }
-        BufferedReader buffReader = new BufferedReader(
+        ExtendedBuffReader buffReader = new ExtendedBuffReader(
                 new InputStreamReader(fileStream, StandardCharsets.UTF_8)
         );
 

@@ -41,7 +41,7 @@ public class Token {
 
 
     public Token(Tokens tokenType){
-        if(tokenType.valueType != Token.TV_FIXED) throw new RuntimeException("this token requires a param");
+        if(tokenType.valueType != Token.TV_FIXED && tokenType.valueType != Token.TV_IGNORE) throw new RuntimeException("this token requires a param");
         this.tokenType = tokenType;
     }
 

@@ -6,8 +6,10 @@ import com.robalb.Token;
 import java.util.EnumMap;
 
 /**
- * machine for all the simple punctuators that can be described in a char transition table.
- * the punctuators covered by this class are all the [OtherPunctuator] except [.] and [...] and including [rightBracePunctuator]
+ * machine for all the punctuators that can be described in a char transition table.
+ * this class covers all ECMA punctuators ([OtherPunctuator] except [.] and [...] )and including [rightBracePunctuator] , / and /=
+ * @implNote this class must be called AFTER the one handling comments, otherwise there will be buggy behaviours: comments will be catched by this class
+ *           and interpreted as DIVISOR DIVISOR or DIVISOR MULTIPLICATOR
  * @see <a href="https://www.ecma-international.org/ecma-262/#prod-OtherPunctuator">ECMAscript specs</a>
  */
 public class SimplePunctuators implements Machine {
@@ -38,6 +40,7 @@ public class SimplePunctuators implements Machine {
         XOR,
         PLUS,
         MINUS,
+        DIVISION,
         NOT,
         NOT_1,
         ASSIGN,
@@ -77,6 +80,9 @@ public class SimplePunctuators implements Machine {
                 new T('^', States.XOR),
                 new T('+', States.PLUS),
                 new T('-', States.MINUS),
+                //the comparisons with '/' expect that /* and // have already been found by another machine
+                //if this machine is called before the machine handling comments, there will be buggy results
+                new T('/', States.DIVISION),
                 new T('!', States.NOT),
                 new T('=', States.ASSIGN),
                 new T('*', States.MULT),
@@ -107,6 +113,10 @@ public class SimplePunctuators implements Machine {
                 new T('-', Machine.PERFECTMATCH, Tokens.P_DECREMENT),
                 new T('=', Machine.PERFECTMATCH, Tokens.P_SUBTRACTION_ASSIGN),
                 new T('x', Machine.ENDMATCH, Tokens.P_MINUS),
+        });
+        this.table.put(States.DIVISION, new T[]{
+                new T('=', Machine.PERFECTMATCH, Tokens.P_DIVISION_ASSIGN),
+                new T('x', Machine.ENDMATCH, Tokens.P_DIVISION),
         });
 
         //1-2 state elements
@@ -195,13 +205,12 @@ public class SimplePunctuators implements Machine {
     /**
      *
      * @param intC the integer rapresentation of the current char read from the buffer. -1 is considered the end of the file
-     * @param intLookahead same as intC, but one character ahead. if intC is -1, intLookahead is expected to also be -1
      * @return one of the integer constants defined in the Machine interface, representing the state of the machine
      * @throws RuntimeException if this method is called when the internal state reaches _END and reset() has not been called
      */
-    @Override public int step(int intC, int intLookahead) throws RuntimeException {
+    @Override public int step(int intC) throws IllegalStateException {
         if(state == States._END){
-            throw new RuntimeException("cannot use step after the machine reaches the _END state");
+            throw new IllegalStateException("cannot use step after the machine reaches the _END state");
         }
 
         //get the array of transitions for the current state
