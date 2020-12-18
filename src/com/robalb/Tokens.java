@@ -1,5 +1,9 @@
 package com.robalb;
 
+/*
+this could be useful to integrate in the future
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+ */
 public enum Tokens {
 
 
@@ -60,6 +64,9 @@ public enum Tokens {
 
     /**
      * PUNCTUATORS
+     * P_ : punctuator
+     * L_ : logical
+     * B_ : bitwise
      * @see <a href="https://www.ecma-international.org/ecma-262/#prod-Punctuator">ECMAscript reference</a>
      */
     ROUND_LEFT(Token.TV_FIXED, "("),
@@ -68,15 +75,22 @@ public enum Tokens {
     SQUARE_RIGHT(Token.TV_FIXED, "]"),
     CURLY_LEFT(Token.TV_FIXED, "{"),
     CURLY_RIGHT(Token.TV_FIXED, "}"),
-    SEMICOLON(Token.TV_FIXED, ";"),
-    COMMA(Token.TV_FIXED, ","),
-    TILDE(Token.TV_FIXED, "~"),
+    P_SEMICOLON(Token.TV_FIXED, ";"),
+    P_COMMA(Token.TV_FIXED, ","),
+    P_COLON(Token.TV_FIXED, ":"),
+    P_B_NOT(Token.TV_FIXED, "~"),
 
     P_REMAINDER(Token.TV_FIXED, "%"),
     P_REMAINDER_ASSIGN(Token.TV_FIXED, "%="),
 
     P_B_XOR(Token.TV_FIXED, "^"),
     P_B_XOR_ASSIGN(Token.TV_FIXED, "^="),
+
+    P_QUESTION_MARK(Token.TV_FIXED, "?"),
+    P_OPTIONAL_CHAINING(Token.TV_FIXED, "?."),
+    P_NULLISH_COALESCING(Token.TV_FIXED, "??"),
+    P_L_NULLISH_ASSIGN(Token.TV_FIXED, "??="),
+
 
     P_PLUS(Token.TV_FIXED, "+"),
     P_INCREMENT(Token.TV_FIXED, "++"),
@@ -86,8 +100,8 @@ public enum Tokens {
     P_DECREMENT(Token.TV_FIXED, "--"),
     P_SUBTRACTION_ASSIGN(Token.TV_FIXED, "-="),
 
-    P_NOT(Token.TV_FIXED, "!"),
-    P_NOT_EQUAL(Token.TV_FIXED, "!="),
+    P_L_NOT(Token.TV_FIXED, "!"),
+    P_L_NOT_EQUAL(Token.TV_FIXED, "!="),
     P_NONIDENTITY(Token.TV_FIXED, "!=="),
 
     P_ASSIGN(Token.TV_FIXED, "="),
@@ -102,12 +116,14 @@ public enum Tokens {
     P_LESS(Token.TV_FIXED, "<"),
     P_LESS_OR_EQUAL(Token.TV_FIXED, "<="),
     P_B_SHIFT_LEFT(Token.TV_FIXED, "<<"),
-    P_L_SHIFT_LEFT_ASSIGN(Token.TV_FIXED, "<<="),
+    P_B_SHIFT_LEFT_ASSIGN(Token.TV_FIXED, "<<="),
 
     P_GREATER(Token.TV_FIXED, ">"),
     P_GREATER_OR_EQUAL(Token.TV_FIXED, ">="),
     P_B_SHIFT_RIGHT(Token.TV_FIXED, ">>"),
-    P_L_SHIFT_RIGHT_ASSIGN(Token.TV_FIXED, ">>="),
+    P_B_UNSIGNED_SHIFT_RIGHT(Token.TV_FIXED, ">>>"),
+    P_B_UNSIGNED_SHIFT_RIGHT_ASSIGN(Token.TV_FIXED, ">>>="),
+    P_B_SHIFT_RIGHT_ASSIGN(Token.TV_FIXED, ">>="),
 
     P_B_AND(Token.TV_FIXED, "&"),
     P_B_AND_ASSIGN(Token.TV_FIXED, "&="),
@@ -123,8 +139,8 @@ public enum Tokens {
     P_DIVISION(Token.TV_FIXED, "/"),
     P_DIVISION_ASSIGN(Token.TV_FIXED, "/="),
 
-    S_DOT(Token.TV_FIXED, "."),
-    S_SPREAD(Token.TV_FIXED, "...");
+    P_DOT(Token.TV_FIXED, "."),
+    P_SPREAD(Token.TV_FIXED, "...");
 
 
 

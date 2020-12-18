@@ -162,7 +162,8 @@ public class IgnoreType implements Machine{
             default -> throw new IllegalStateException("Unexpected value: " + state);
         }
 
-        return 0;
+        error = "invalid state";
+        return Machine.ERROR;
     }
 
     public IgnoreType(){

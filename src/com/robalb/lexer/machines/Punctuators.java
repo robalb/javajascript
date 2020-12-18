@@ -6,13 +6,19 @@ import com.robalb.Token;
 import java.util.EnumMap;
 
 /**
- * machine for all the punctuators that can be described in a char transition table.
- * this class covers all ECMA punctuators ([OtherPunctuator] except [.] and [...] )and including [rightBracePunctuator] , / and /=
- * @implNote this class must be called AFTER the one handling comments, otherwise there will be buggy behaviours: comments will be catched by this class
+ * regex machine for all the ECMA punctuators except
+ * P_OPTIONAL_CHAINING ?.[lookahead != (0-9)]
+ * P_NULLISH_COALESCING ??
+ * P_L_NULLISH_ASSIGN ??=
+ *
+ * @implNote - this class must be called AFTER the one handling comments, otherwise there will be buggy behaviours: comments will be catched by this class
  *           and interpreted as DIVISOR DIVISOR or DIVISOR MULTIPLICATOR
+ *           - This class must be called AFTER the one handling numeric literals, otherwise there will be buggy behaviours:
+ *           floats starting with a dot will be catched by this class and interpreted as DOT INTEGER
+ *
  * @see <a href="https://www.ecma-international.org/ecma-262/#prod-OtherPunctuator">ECMAscript specs</a>
  */
-public class SimplePunctuators implements Machine {
+public class Punctuators implements Machine {
 
     /**
      * the current internal state
@@ -51,14 +57,17 @@ public class SimplePunctuators implements Machine {
         LESS_1,
         GREATER,
         GREATER_1,
+        GREATER_2,
         AND,
         AND_1,
         OR,
         OR_1,
+        DOT,
+        DOT_1,
     }
 
 
-    public SimplePunctuators(){
+    public Punctuators(){
 
         //initialize the machine
         this.reset();
@@ -72,9 +81,11 @@ public class SimplePunctuators implements Machine {
                 new T(']', Machine.PERFECTMATCH, Tokens.SQUARE_RIGHT),
                 new T('{', Machine.PERFECTMATCH, Tokens.CURLY_LEFT),
                 new T('}', Machine.PERFECTMATCH, Tokens.CURLY_RIGHT),
-                new T(';', Machine.PERFECTMATCH, Tokens.SEMICOLON),
-                new T(',', Machine.PERFECTMATCH, Tokens.COMMA),
-                new T('~', Machine.PERFECTMATCH, Tokens.TILDE),
+                new T(';', Machine.PERFECTMATCH, Tokens.P_SEMICOLON),
+                new T(',', Machine.PERFECTMATCH, Tokens.P_COMMA),
+                new T('~', Machine.PERFECTMATCH, Tokens.P_B_NOT),
+                new T(':', Machine.PERFECTMATCH, Tokens.P_COLON),
+                new T('?', Machine.PERFECTMATCH, Tokens.P_QUESTION_MARK),
 
                 new T('%', States.REMAINDER),
                 new T('^', States.XOR),
@@ -90,6 +101,7 @@ public class SimplePunctuators implements Machine {
                 new T('>', States.GREATER),
                 new T('&', States.AND),
                 new T('|', States.OR),
+                new T('.', States.DOT),
                 //the last Transition in every array is reserved to the 'ELSE' case, so the char is irrelevant. It will be called when none of the
                 //Transitions declared above will match
                 new T('x'),
@@ -122,11 +134,11 @@ public class SimplePunctuators implements Machine {
         //1-2 state elements
         this.table.put(States.NOT, new T[]{
                 new T('=', States.NOT_1),
-                new T('x', Machine.ENDMATCH, Tokens.P_NOT),
+                new T('x', Machine.ENDMATCH, Tokens.P_L_NOT),
         });
         this.table.put(States.NOT_1, new T[]{
                 new T('=', Machine.PERFECTMATCH, Tokens.P_NONIDENTITY),
-                new T('x', Machine.ENDMATCH, Tokens.P_NOT_EQUAL),
+                new T('x', Machine.ENDMATCH, Tokens.P_L_NOT_EQUAL),
         });
 
         this.table.put(States.ASSIGN, new T[]{
@@ -154,7 +166,7 @@ public class SimplePunctuators implements Machine {
                 new T('x', Machine.ENDMATCH, Tokens.P_LESS),
         });
         this.table.put(States.LESS_1, new T[]{
-                new T('=', Machine.PERFECTMATCH, Tokens.P_L_SHIFT_LEFT_ASSIGN),
+                new T('=', Machine.PERFECTMATCH, Tokens.P_B_SHIFT_LEFT_ASSIGN),
                 new T('x', Machine.ENDMATCH, Tokens.P_B_SHIFT_LEFT),
         });
 
@@ -164,8 +176,13 @@ public class SimplePunctuators implements Machine {
                 new T('x', Machine.ENDMATCH, Tokens.P_GREATER),
         });
         this.table.put(States.GREATER_1, new T[]{
-                new T('=', Machine.PERFECTMATCH, Tokens.P_L_SHIFT_RIGHT_ASSIGN),
+                new T('>', States.GREATER_2),
+                new T('=', Machine.PERFECTMATCH, Tokens.P_B_SHIFT_RIGHT_ASSIGN),
                 new T('x', Machine.ENDMATCH, Tokens.P_B_SHIFT_RIGHT),
+        });
+        this.table.put(States.GREATER_2, new T[]{
+                new T('=', Machine.PERFECTMATCH, Tokens.P_B_UNSIGNED_SHIFT_RIGHT_ASSIGN),
+                new T('x', Machine.ENDMATCH, Tokens.P_B_UNSIGNED_SHIFT_RIGHT),
         });
 
         this.table.put(States.AND, new T[]{
@@ -186,6 +203,19 @@ public class SimplePunctuators implements Machine {
         this.table.put(States.OR_1, new T[]{
                 new T('=', Machine.PERFECTMATCH, Tokens.P_L_OR_ASSIGN),
                 new T('x', Machine.ENDMATCH, Tokens.P_L_OR),
+        });
+
+        this.table.put(States.DOT, new T[]{
+                new T('.', States.DOT_1),
+                new T('x', Machine.ENDMATCH, Tokens.P_DOT),
+        });
+        this.table.put(States.DOT_1, new T[]{
+                new T('.', Machine.PERFECTMATCH, Tokens.P_SPREAD),
+                //TODO: research what is the correct behaviour when meeting a double dot that is not related to integers
+                //Probably, they should be treated as two DOT tokens, and the error should be at the parse level (unexpected token)
+                //but also, if we know that double dots not related to integers are never valid, we could fake a parse level error, and return unexpected token error here
+                //the las solution, is the one i'm currently using
+                new T('x', "Unexpected token"),
         });
     }
 
@@ -286,17 +316,17 @@ public class SimplePunctuators implements Machine {
             this.token = token;
         }
 
-//        /**
-//         * End case: the specified char causes the machine to end, returning the specified error string and the public state ERROR
-//         * @param c the char that will cause this state change
-//         * @param error a string descriving the error found
-//         */
-//        T(char c, String error) {
-//            this.c = c;
-//            this.state = States._END;
-//            this.error = error;
-//            this.publicState = Machine.ERROR;
-//        }
+        /**
+         * End case: the specified char causes the machine to end, returning the specified error string and the public state ERROR
+         * @param c the char that will cause this state change
+         * @param error a string descriving the error found
+         */
+        T(char c, String error) {
+            this.c = c;
+            this.state = States._END;
+            this.error = error;
+            this.publicState = Machine.ERROR;
+        }
 
         /**
          * End case: the specified char causes the machine to end, returning the public state NOMATCH

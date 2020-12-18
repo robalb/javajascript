@@ -2,17 +2,18 @@ package com.robalb.lexer;
 
 import com.robalb.Token;
 import com.robalb.Tokens;
+import com.robalb.lexer.machines.IdentifiersKeywordsLiterals;
 import com.robalb.lexer.machines.IgnoreType;
 import com.robalb.lexer.machines.Machine;
-import com.robalb.lexer.machines.SimplePunctuators;
+import com.robalb.lexer.machines.Punctuators;
 
 import com.robalb.fileStream.ExtendedBuffReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * I'm sure this class could have been done in 100 beautiful lines of code using some method i don't know
- * instead, it uses it's own hardcoded ugly-ass regex engine, spit into different modules. Enjoy
+ * I'm sure this class could have been done in 100 beautiful lines of code using some method i don't know.
+ * Instead, it uses it's own hardcoded ugly-ass regex engine, spit into different modules. Enjoy
  */
 public class Tokenizer {
 
@@ -26,18 +27,20 @@ public class Tokenizer {
 
         ArrayList<Token> tokenizedInput = new ArrayList<>();
 
-        //TODO: move logic to dedicated class
+        //TODO: move cursor position logic to dedicated class
         //position variables, updated when a newline cursor is met
         long position = 0;
         long markedPosition = 0;
         int line = 1;
 
         //declare array of statemachines that will receives the stream character one by one.
-        //when a machine doesn't find any match, the code will backtrack and move to the next one so the order
+        //When a machine doesn't find any match the code will backtrack and move to the next one, so the order
         //in this array is very important
         Machine[] machines = {
                 new IgnoreType(),
-                new SimplePunctuators()
+                new IdentifiersKeywordsLiterals(),
+                //regex /[anything]/
+                new Punctuators()
         };
         //the machine that we are stepping through at the moment
         int machineIndex = 0;
