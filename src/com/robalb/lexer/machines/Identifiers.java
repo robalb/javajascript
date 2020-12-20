@@ -50,7 +50,7 @@ public class Identifiers implements Machine{
         }
 
         //hex digit: a char in the range 0-9 a-z A-Z
-        final boolean isHex = ( intC >= 0 && intC <= 9 ) || ( intC >= 'a' && intC <= 'z' ) || ( intC >= 'A' && intC <= 'Z' );
+        final boolean isHex = ( intC >= '0' && intC <= '9' ) || ( intC >= 'a' && intC <= 'f' ) || ( intC >= 'A' && intC <= 'F' );
 
         //when going into escapesequence mode, set a variable to flag the previous state: identifierStart,
         //identifierPart, or string.
@@ -115,7 +115,7 @@ public class Identifiers implements Machine{
                     state = States.ESCAPE_1;
                     return Machine.STEPPING;
                 }else{
-                    error = "invalid escape sequence";
+                    error = "invalid escape sequence: expected 'u'";
                     return Machine.ERROR;
                 }
             }
@@ -131,7 +131,7 @@ public class Identifiers implements Machine{
                     return Machine.STEPPING;
                 }
                 else{
-                    error = "invalid escape sequence";
+                    error = "invalid escape sequence: expected '{' or hexDigit";
                     return Machine.ERROR;
                 }
             }
@@ -141,12 +141,12 @@ public class Identifiers implements Machine{
                     escapeValue.appendCodePoint(intC);
                     return Machine.STEPPING;
                 }
-                if(intC == '}'){
+                else if(intC == '}'){
                     //escape completed logic
                     return escapeCompleted(true);
                 }
                 else{
-                    error = "invalid escape sequence";
+                    error = "invalid escape sequence: expected '}'";
                     return Machine.ERROR;
                 }
             }
@@ -161,7 +161,7 @@ public class Identifiers implements Machine{
                     return Machine.STEPPING;
                 }
                 else{
-                    error = "invalid escape sequence";
+                    error = "invalid escape sequence: expected 4 hex digits";
                     return Machine.ERROR;
                 }
             }
@@ -180,15 +180,22 @@ public class Identifiers implements Machine{
     }
 
     private int escapeCompleted(boolean codepointEscape){
-        int escapeInt = Integer.parseUnsignedInt(escapeValue.toString(), 16);
+        //TODO find a way to avoid exception
+        int escapeInt;
+        try {
+            escapeInt = Integer.parseUnsignedInt(escapeValue.toString(), 16);
+        }catch(NumberFormatException e){
+            error = "invalid escape sequence: value out of range";
+            return Machine.ERROR;
+        }
         //https://www.ecma-international.org/ecma-262/#prod-CodePoint
         if(codepointEscape && escapeInt > 0x10FFFF){
-            error = "invalid escape sequence";
+            error = "invalid escape sequence: value must be ≤ 0x10FFFF";
             return Machine.ERROR;
         }
         if( (entryPosition == EscapeEntryPositions.ID_START && !isIdStart(escapeInt)) ||
             (entryPosition == EscapeEntryPositions.ID_PART && !isIdPart(escapeInt)) ){
-            error = "invalid escape sequence";
+            error = "invalid escape sequence: codepoint can't be used in an identifier";
             return Machine.ERROR;
         }
         identifierValue.appendCodePoint(escapeInt);
