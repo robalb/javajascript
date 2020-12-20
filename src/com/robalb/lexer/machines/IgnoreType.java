@@ -31,6 +31,9 @@ public class IgnoreType implements Machine{
 
     }
 
+    //varilable used internally
+    private boolean lineTerminatorsContained;
+
     @Override
     public int step(int intC) throws IllegalStateException {
         if(state == States._END){
@@ -113,10 +116,15 @@ public class IgnoreType implements Machine{
                     error = "unterminated comment";
                     return Machine.ERROR;
                 }
-
                 if( intC == '*'){
                     state = States.MULTILINE_COMMENT_1;
                 }
+                //if there is one or more line terminator, set a flag to true
+                //since we are not counting the line terminators, there is no need for cr lf detection logic
+                if(isNewline){
+                    lineTerminatorsContained = true;
+                }
+
                 return Machine.STEPPING;
 
             }
@@ -129,14 +137,14 @@ public class IgnoreType implements Machine{
                 }
                 if( intC == '/'){
                     state = States._END;
-                    token = new Token(Tokens.COMMENT);
+                    token = lineTerminatorsContained?
+                            new Token(Tokens.MUTLILINE_COMMENT) :
+                            new Token(Tokens.COMMENT);
                     return Machine.PERFECTMATCH;
                 }
                 state = States.MULTILINE_COMMENT;
                 return Machine.STEPPING;
             }
-
-
 
             case SPACE ->{
                 if(isSpace){
@@ -171,6 +179,7 @@ public class IgnoreType implements Machine{
 
     @Override public void reset() {
         state = States._START;
+        lineTerminatorsContained = false;
     }
 
     @Override

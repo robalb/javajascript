@@ -16,16 +16,27 @@ public enum Tokens {
 
     /**
      * LINE TERMINATOR
+     * Although not considered to be tokens, l.terminators are not ignored, as they guide the process of automatic semicolon insertion
      * @see <a href="https://www.ecma-international.org/ecma-262/#sec-line-terminators">ECMAscript reference</a>
+     * @see <a href="https://www.ecma-international.org/ecma-262/#sec-lexical-and-regexp-grammars">ECMAScript reference</a>
      *
      */
-    LINE_TERMINATOR(Token.TV_IGNORE),
+    LINE_TERMINATOR(Token.TV_FIXED, "<line_terminator>"),
 
     /**
      * COMMENT
+     * if a comment is of type multiline and it has one or more lineterminators in it, it will result in a
+     * MULTILINE_COMMENT token, otherwise it will be a COMMENT token.
+     * Comment tokens are ignored and not inserted in the token streams, multiline comments are replaced by a single
+     * lineterminator token. By ecma standard:
+     * 'if a MultiLineComment contains one or more line terminators, then it is replaced by a single
+     * line terminator, which becomes part of the stream of input elements for the syntactic grammar.'
      * @see <a href="https://www.ecma-international.org/ecma-262/#sec-comments">ECMAscript reference</a>
+     * @see <a href="https://www.ecma-international.org/ecma-262/#sec-lexical-and-regexp-grammars">ECMAScript reference</a>
+     *
      */
     COMMENT(Token.TV_IGNORE),
+    MUTLILINE_COMMENT(Token.TV_FIXED, "<multiline_comment>"),
 
     /**
      * LITERALS

@@ -27,7 +27,23 @@ public class Tokenizer {
 
         ArrayList<Token> tokenizedInput = new ArrayList<>();
 
-        //TODO: move cursor position logic to dedicated class
+        //TODO: implement and move cursor position logic to dedicated class
+//        final boolean isNewline = !isSpace && ( intC == 0x00D ||
+//                intC == 0x000A || intC == 0x2028 || intC == 0x2029
+//        );
+//        if(ignoreLf){
+//            if(intC != 0x000D) ignoreLf = false;
+//            if(isNewline && intC != 0x000A){
+//                lineTerminatorsContained = true;
+//            }
+//        }else{
+//            if(intC == 0x000D){
+//                ignoreLf = true;
+//            }
+//            if(isNewline){
+//                lineTerminatorsContained = true;
+//            }
+//        }
         //position variables, updated when a newline cursor is met
         long position = 0;
         long markedPosition = 0;
@@ -67,21 +83,24 @@ public class Tokenizer {
                 break;
             }
 
-            //the machine require further steps to get a result
-            //else if(state == Machine.STEPPING){
-            //}
-
             //the machine found a result
             else if(state == Machine.PERFECTMATCH || state == Machine.ENDMATCH){
                 //handle token result
                 Token t = machines[machineIndex].getToken();
+                //update line position
+                //TODO: remove, replace with a better position system
                 if(t.type() == Tokens.LINE_TERMINATOR){
                   line++;
                   position = 0;
                 }
-//                if(t.valueType() != Token.TV_IGNORE){
+                //add tokens to the stream
+                if(t.valueType() != Token.TV_IGNORE){
+                    //replace multiline comments with a line terminator (see comment token docs)
+                    if(t.type() == Tokens.MUTLILINE_COMMENT){
+                        t = new Token(Tokens.LINE_TERMINATOR);
+                    }
                     tokenizedInput.add(t);
-//                }
+                }
 
                 //handle buffer marks
                 if(state == Machine.ENDMATCH){

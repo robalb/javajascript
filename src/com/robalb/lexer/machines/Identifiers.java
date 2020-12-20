@@ -195,7 +195,7 @@ public class Identifiers implements Machine{
         }
         if( (entryPosition == EscapeEntryPositions.ID_START && !isIdStart(escapeInt)) ||
             (entryPosition == EscapeEntryPositions.ID_PART && !isIdPart(escapeInt)) ){
-            error = "invalid escape sequence: codepoint can't be used in an identifier";
+            error = "invalid escape sequence: character can't be used as part of an identifier";
             return Machine.ERROR;
         }
         identifierValue.appendCodePoint(escapeInt);
@@ -212,9 +212,10 @@ public class Identifiers implements Machine{
 
         if(isKeyword){
             if(hadEscape){
-                error = "Escape sequence in keyword ";
+                error = "Keywords must not contain escaped characters";
                 return Machine.ERROR;
             }else{
+                //TODO
                 token = new Token(Tokens.K_ELSE);
             }
         }
