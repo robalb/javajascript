@@ -43,7 +43,7 @@ public class IgnoreType implements Machine{
                 Character.getType(intC) == Character.SPACE_SEPARATOR
                 );
 
-        final boolean isNewline = ( intC == 0x00D ||
+        final boolean isNewline = !isSpace && ( intC == 0x00D ||
                         intC == 0x000A || intC == 0x2028 || intC == 0x2029
         );
 
@@ -55,7 +55,7 @@ public class IgnoreType implements Machine{
                     return Machine.NOMATCH;
                 }
                 //slash -beginnig of a comment - case
-                if((char) intC == '/'){
+                if(intC == '/'){
                     state = States.SLASH;
                     return Machine.STEPPING;
                 }
@@ -84,14 +84,13 @@ public class IgnoreType implements Machine{
             }
 
             case SLASH ->{
-                if((char) intC == '/'){
+                if( intC == '/'){
                     state = States.INLINE_COMMENT;
-                    return Machine.STEPPING;
                 }
-                else if((char) intC == '*'){
+                else if( intC == '*'){
                     state = States.MULTILINE_COMMENT;
-                    return Machine.STEPPING;
                 }
+                return Machine.STEPPING;
             }
 
             case INLINE_COMMENT -> {
@@ -105,6 +104,7 @@ public class IgnoreType implements Machine{
                     token = new Token(Tokens.COMMENT);
                     return Machine.ENDMATCH;
                 }
+                return Machine.STEPPING;
             }
 
             case MULTILINE_COMMENT -> {
@@ -114,7 +114,7 @@ public class IgnoreType implements Machine{
                     return Machine.ERROR;
                 }
 
-                if((char) intC == '*'){
+                if( intC == '*'){
                     state = States.MULTILINE_COMMENT_1;
                 }
                 return Machine.STEPPING;
@@ -127,7 +127,7 @@ public class IgnoreType implements Machine{
                     error = "unterminated comment";
                     return Machine.ERROR;
                 }
-                if((char) intC == '/'){
+                if( intC == '/'){
                     state = States._END;
                     token = new Token(Tokens.COMMENT);
                     return Machine.PERFECTMATCH;
@@ -162,8 +162,6 @@ public class IgnoreType implements Machine{
             default -> throw new IllegalStateException("Unexpected value: " + state);
         }
 
-        error = "invalid state";
-        return Machine.ERROR;
     }
 
     public IgnoreType(){

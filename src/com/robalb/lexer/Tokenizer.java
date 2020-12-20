@@ -2,7 +2,7 @@ package com.robalb.lexer;
 
 import com.robalb.Token;
 import com.robalb.Tokens;
-import com.robalb.lexer.machines.IdentifiersKeywordsLiterals;
+import com.robalb.lexer.machines.Identifiers;
 import com.robalb.lexer.machines.IgnoreType;
 import com.robalb.lexer.machines.Machine;
 import com.robalb.lexer.machines.Punctuators;
@@ -38,7 +38,7 @@ public class Tokenizer {
         //in this array is very important
         Machine[] machines = {
                 new IgnoreType(),
-                new IdentifiersKeywordsLiterals(),
+                new Identifiers(),
                 //regex /[anything]/
                 new Punctuators()
         };

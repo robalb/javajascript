@@ -1,9 +1,5 @@
-//
-//
-//. .
-//§
+/*
 
-var u$‌$ = 2;
-var u$‍$ = 5;
-var u$$ = 3;
-console.log(u$‌$ + u$$ + u$‍$);
+ */
+let yolo\u{0063} = swag;
+console.log(yoloc)

@@ -63,6 +63,7 @@ public class Token {
         this.bval = boolean_value;
     }
 
+
     public int valueType(){
         return this.tokenType.valueType;
     }

@@ -47,6 +47,7 @@ public enum Tokens {
      * KEYWORDS
      * particular string literals reserved by the language, that cannot be used as identifiers
      */
+    //TODO update to https://www.ecma-international.org/ecma-262/#prod-ReservedWord
     K_BREAK(Token.TV_FIXED, "break"),
     K_CATCH(Token.TV_FIXED, "catch"),
     K_CLASS(Token.TV_FIXED, "class"),
