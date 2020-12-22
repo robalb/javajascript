@@ -2,10 +2,7 @@ package com.robalb.lexer;
 
 import com.robalb.Token;
 import com.robalb.Tokens;
-import com.robalb.lexer.machines.Identifiers;
-import com.robalb.lexer.machines.IgnoreType;
-import com.robalb.lexer.machines.Machine;
-import com.robalb.lexer.machines.Punctuators;
+import com.robalb.lexer.machines.*;
 
 import com.robalb.fileStream.ExtendedBuffReader;
 import java.io.IOException;
@@ -55,6 +52,7 @@ public class Tokenizer {
         Machine[] machines = {
                 new IgnoreType(),
                 new Identifiers(),
+                new NumericLiteral(),
                 //regex /[anything]/
                 new Punctuators()
         };

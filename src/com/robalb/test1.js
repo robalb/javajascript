@@ -1,6 +1,7 @@
 /*
 
 
- */console.log(a);
+ *console.log(12);
 let yolo\u{00000000000000000000000000000000000000000000000000063} = swag;
-console.log(yoloc)
+console.log(yoloc)*/
+0b10n
