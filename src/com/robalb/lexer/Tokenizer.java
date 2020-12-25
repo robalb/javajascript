@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
+ * This tokenizer has been built by hand and not using automated tools as an exercise.
  * I'm sure this class could have been done in 100 beautiful lines of code using some method i don't know.
- * Instead, it uses it's own hardcoded ugly-ass regex engine, spit into different modules. Enjoy
+ * Instead, it uses it's own hardcoded (and unnecessarily backtracking) ugly-ass regex engine, spit into different modules. Enjoy
  */
 public class Tokenizer {
 
@@ -49,6 +50,8 @@ public class Tokenizer {
         //declare array of statemachines that will receives the stream character one by one.
         //When a machine doesn't find any match the code will backtrack and move to the next one, so the order
         //in this array is very important
+        //note: bactracking has been added to keep different tokens separated in different classes and in order. It is
+        // possible to integrate all conflicting states in a single machine
         Machine[] machines = {
                 new IgnoreType(),
                 new Identifiers(),

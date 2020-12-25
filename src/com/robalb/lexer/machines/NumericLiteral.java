@@ -3,6 +3,8 @@ package com.robalb.lexer.machines;
 import com.robalb.Token;
 import com.robalb.Tokens;
 
+import java.math.BigInteger;
+
 //https://2ality.com/2012/03/displaying-numbers.html
 public class NumericLiteral implements Machine {
 
@@ -24,10 +26,10 @@ public class NumericLiteral implements Machine {
     }
 
     //variables used internally
-    //TODO: add to reset
-    StringBuilder integerStr = new StringBuilder();
-    StringBuilder fractionalStr = new StringBuilder();
-    StringBuilder exponentStr = new StringBuilder();
+    //TODO: find and document the best capacity
+    StringBuilder integerStr = new StringBuilder(200);
+    StringBuilder fractionalStr = new StringBuilder(100);
+    StringBuilder exponentStr = new StringBuilder(50);
     byte exponentSign = 0;//0:nosign 1: + -1: -
     byte integerStrRadix = 10;//one of: 2, 8, 10, 16
     boolean isBig = false;
@@ -50,7 +52,7 @@ public class NumericLiteral implements Machine {
                    state = States.INITIAL_DOT;
                }
                else if(nonZeroDigit){
-                   integerStr.append(intC);
+                   integerStr.appendCodePoint(intC);
                    state = States.NONZERO;
                }
                else{
@@ -81,18 +83,18 @@ public class NumericLiteral implements Machine {
                     return Machine.ERROR;
                 }
                 else if(intC == '.'){
-                    integerStr.append('0');
+                    integerStr.appendCodePoint('0');
                     state = States.FRACTIONAL;
                 }
                 else if(intC == 'n'){
                     isBig = true;
-                    integerStr.append('0');
+                    integerStr.appendCodePoint('0');
                     state = States._END;
                     return processToken(Machine.PERFECTMATCH);
                 }
                 else{
                     state = States._END;
-                    integerStr.append('0');
+                    integerStr.appendCodePoint('0');
                     return processToken(Machine.ENDMATCH);
                 }
                 return Machine.STEPPING;
@@ -100,7 +102,7 @@ public class NumericLiteral implements Machine {
 
             case NONZERO -> {
                 if(decimalDigit){
-                    integerStr.append('0');
+                    integerStr.appendCodePoint(intC);
                 }
                 else if(intC == '.'){
                     state = States.FRACTIONAL;
@@ -122,8 +124,8 @@ public class NumericLiteral implements Machine {
 
             case INITIAL_DOT ->{
                 if(decimalDigit){
-                    integerStr.append('0');
-                    fractionalStr.append(intC);
+                    integerStr.appendCodePoint('0');
+                    fractionalStr.appendCodePoint(intC);
                     state = States.FRACTIONAL;
                     return Machine.STEPPING;
                 }
@@ -136,7 +138,7 @@ public class NumericLiteral implements Machine {
 
             case FRACTIONAL -> {
                 if(decimalDigit) {
-                    fractionalStr.append(intC);
+                    fractionalStr.appendCodePoint(intC);
                 }
                 else if(intC == 'e' || intC == 'E'){
                     state = States.EXPONENT;
@@ -150,7 +152,7 @@ public class NumericLiteral implements Machine {
 
             case EXPONENT -> {
                 if(decimalDigit){
-                    exponentStr.append(intC);
+                    exponentStr.appendCodePoint(intC);
                 }
                 else if(intC == '+' || intC == '-'){
                     if(exponentSign == 0){
@@ -181,10 +183,10 @@ public class NumericLiteral implements Machine {
 
             case NONDEC ->{
                 final boolean octalDigit = intC >= '0' && intC <= '7';
-                final boolean hexDigit = decimalDigit || ( intC >= 'a' && intC <= 'f' ) || ( intC >= 'A' && intC <= 'F' );
+                final boolean hexDigit = (intC > '0' && intC <= '9') || ( intC >= 'a' && intC <= 'f' ) || ( intC >= 'A' && intC <= 'F' );
                 final boolean binDigit = (intC == '1' || intC == '0');
                 if((integerStrRadix == 2 && binDigit) || (integerStrRadix == 8 && octalDigit) || (integerStrRadix == 16 && hexDigit)){
-                    integerStr.append(intC);
+                    integerStr.appendCodePoint(intC);
                 }
                 else if(intC == 'n'){
                     if(integerStr.length() > 0){
@@ -221,13 +223,61 @@ public class NumericLiteral implements Machine {
     }
 
     private int processToken(int returnIfOk) {
-        //TODO
-        //number creation process in summary:
-        //if isBig=true, a different token may be useful. only the integerStr is needed
-        //Otherwise, the length of the stringbuffers will reveal if there are fractional or exponential parts
-        //there will always be an integer part, but the radix may vary according to integerStrRadix
-        //careful with numbers too big
-        token = new Token(Tokens.L_NUMBER, 420);
+//        System.out.println("processing ::::");
+//        System.out.println(integerStr.toString()   );
+//        System.out.println(fractionalStr.toString()   );
+//        System.out.println(exponentStr.toString()   );
+        if(isBig){
+            BigInteger bigIntMV;
+            try {
+                bigIntMV = new BigInteger(integerStr.toString(), integerStrRadix);
+                token = new Token(Tokens.L_BIGINT, bigIntMV);
+            }catch(NumberFormatException e){
+                //internal error, or maximum size reached
+                error = "cannot perform conversion to BigInteger";
+                System.out.println(e.toString());
+                return Machine.ERROR;
+            }
+        }
+        else if(integerStrRadix == 10){
+            //craft the string to convert into double
+            if(fractionalStr.length() > 0){
+                integerStr.append('.');
+                integerStr.append(fractionalStr);
+            }
+            if(exponentStr.length() > 0) {
+                integerStr.append('e');
+                if(exponentSign == -1){
+                    integerStr.append('-');
+                }
+                integerStr.append(exponentStr);
+            }
+//            System.out.println(integerStr.toString());
+            double MV;
+            try{
+                MV = Double.parseDouble(integerStr.toString());
+            }
+            catch(NumberFormatException e){
+                error = "cannot perform number conversion ";
+                System.out.println(e.toString());
+                return Machine.ERROR;
+            }
+            token = new Token(Tokens.L_NUMBER, MV);
+        }
+        //the integerStrRadix is not decimal
+        else{
+            double MV;
+            try{
+                BigInteger b = new BigInteger(integerStr.toString(), integerStrRadix);
+                MV = b.doubleValue();
+            }
+            catch(NumberFormatException e){
+                error = "cannot perform nondecimal number conversion";
+                System.out.println(e.toString());
+                return Machine.ERROR;
+            }
+            token = new Token(Tokens.L_NUMBER, MV);
+        }
         return returnIfOk;
     }
 

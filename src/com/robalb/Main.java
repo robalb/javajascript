@@ -52,6 +52,7 @@ public class Main{
                 case Token.TV_BOOLEAN -> System.out.println(t.bval());
                 case Token.TV_NUMBER -> System.out.println(t.nval());
                 case Token.TV_WORD -> System.out.println(t.wval());
+                case Token.TV_BIGINT -> System.out.println(t.ival());
                 default -> System.out.println(" ");
             }
         }

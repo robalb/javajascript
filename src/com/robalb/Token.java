@@ -1,13 +1,22 @@
 package com.robalb;
 
+import java.math.BigInteger;
+
+//todo: create an abstract token class, and different token classes once all token types and their needs are established
 public class Token {
     //constants for the different Token Value types that a token can have
 
     /**
      * describes the type of value associated to a token:
-     * a numeric value, specifically a double
+     * a numeric value of type double
      */
     public static final int TV_NUMBER = 1;
+
+    /**
+     * describes the type of value associated to a token:
+     *  a numeric value of type BIGINT
+     */
+    public static final int TV_BIGINT = 6;
 
     /**
      * describes the type of value associated to a token:
@@ -37,6 +46,7 @@ public class Token {
 
     private String wval = "";
     private double nval = 0.0;
+    private BigInteger ival = new BigInteger("0");
     private boolean bval = true;
 
 
@@ -63,6 +73,13 @@ public class Token {
         this.bval = boolean_value;
     }
 
+    public Token(Tokens tokenType, BigInteger bigint_value){
+        if(tokenType.valueType != Token.TV_BIGINT) throw new RuntimeException("this token requires a different param type");
+        this.tokenType = tokenType;
+        this.ival = bigint_value;
+
+    }
+
 
     public int valueType(){
         return this.tokenType.valueType;
@@ -80,5 +97,8 @@ public class Token {
     }
     public boolean bval(){
         return this.bval;
+    }
+    public BigInteger ival(){
+        return this.ival;
     }
 }
