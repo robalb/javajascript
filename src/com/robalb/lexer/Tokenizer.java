@@ -53,11 +53,12 @@ public class Tokenizer {
         //note: bactracking has been added to keep different tokens separated in different classes and in order. It is
         // possible to integrate all conflicting states in a single machine
         Machine[] machines = {
-                new IgnoreType(),
+                new separatorsAndIgnored(),
                 new Identifiers(),
-                new NumericLiteral(),
+                new NumericAndBigintLiterals(),
                 //regex /[anything]/
-                new Punctuators()
+                new Punctuators(),
+                new StringAndTemplateLiterals(),
         };
         //the machine that we are stepping through at the moment
         int machineIndex = 0;

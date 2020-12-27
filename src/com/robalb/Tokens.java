@@ -46,6 +46,7 @@ public enum Tokens {
     L_NULL(Token.TV_FIXED, "null"),
     L_BOOLEAN(Token.TV_BOOLEAN),
     //https://2ality.com/2012/03/displaying-numbers.html
+    //https://indepth.dev/posts/1139/here-is-what-you-need-to-know-about-javascripts-number-type
     L_NUMBER(Token.TV_NUMBER),
     L_BIGINT(Token.TV_BIGINT),
     L_STRING(Token.TV_WORD),

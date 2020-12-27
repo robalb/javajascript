@@ -6,7 +6,7 @@ import com.robalb.Tokens;
 import java.math.BigInteger;
 
 //https://2ality.com/2012/03/displaying-numbers.html
-public class NumericLiteral implements Machine {
+public class NumericAndBigintLiterals implements Machine {
 
     String error;
 
@@ -281,7 +281,7 @@ public class NumericLiteral implements Machine {
         return returnIfOk;
     }
 
-    public NumericLiteral(){
+    public NumericAndBigintLiterals(){
         reset();
     }
 

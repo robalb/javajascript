@@ -6,7 +6,7 @@ import com.robalb.Tokens;
 /**
  * machine for all the tokens that are of type Token.TV_IGNORE:
  */
-public class IgnoreType implements Machine{
+public class separatorsAndIgnored implements Machine{
 
     String error = "";
     Token token;
@@ -172,7 +172,7 @@ public class IgnoreType implements Machine{
 
     }
 
-    public IgnoreType(){
+    public separatorsAndIgnored(){
         reset();
     }
 
