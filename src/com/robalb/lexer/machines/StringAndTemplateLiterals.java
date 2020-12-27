@@ -96,7 +96,7 @@ public class StringAndTemplateLiterals implements Machine{
                     escapeString.appendCodePoint('u');
                     //add this u to the escape stringbuilder
 //                    state = States.ESCAPE_1;//in this state, don't forget to check for EOF
-                    return Machine.STEPPING;
+                    return Machine.STEPPING;//do not remove this (so spaghetti i know)
                 }
                 //TODO is this good? does this justify a hashmap?
                 else if(intC == 'b') string.appendCodePoint(0x0008);
